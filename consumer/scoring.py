@@ -44,6 +44,13 @@ def _get_registered(domain: str) -> str:
 
 SEED_REGISTERED: frozenset[str] = frozenset(_get_registered(d) for d in SEED_DOMAINS)
 
+# Maps each seed's domain part (no TLD) to its full registered seed, for brand-level checks
+_SEED_BRAND_MAP: dict[str, str] = {
+    tldextract.extract(s).domain: _get_registered(s)
+    for s in SEED_DOMAINS
+    if tldextract.extract(s).domain
+}
+
 SEEN_FINGERPRINTS: set[str] = set()
 _FINGERPRINT_QUEUE: deque[str] = deque()
 
@@ -109,6 +116,49 @@ def score_domain(domain: str, cert: dict) -> dict | None:
                     'flag_reason': 'homoglyph',
                     'score': 0,
                     'edit_distance': dist,
+                    'issuer': cert.get('issuer'),
+                    'not_before': cert.get('not_before'),
+                    'not_after': cert.get('not_after'),
+                    'seen_at': cert.get('seen_at'),
+                    'fingerprint': fingerprint,
+                }
+
+    candidate_part = tldextract.extract(domain).domain
+    part_segments = set(candidate_part.split('-'))
+
+    for brand, seed in _SEED_BRAND_MAP.items():
+        if (len(brand) >= 4 and brand in candidate_part) or \
+                (len(brand) <= 3 and brand in part_segments):
+            if fingerprint:
+                _add_fingerprint(fingerprint)
+            return {
+                'candidate_domain': domain,
+                'matched_seed': seed,
+                'flag_reason': 'brand_contains',
+                'score': 0,
+                'edit_distance': None,
+                'issuer': cert.get('issuer'),
+                'not_before': cert.get('not_before'),
+                'not_after': cert.get('not_after'),
+                'seen_at': cert.get('seen_at'),
+                'fingerprint': fingerprint,
+            }
+
+    for segment in part_segments | {candidate_part}:
+        if len(segment) < 4:
+            continue
+        for brand, seed in _SEED_BRAND_MAP.items():
+            if len(brand) < 4:
+                continue
+            if Levenshtein.distance(segment, brand) == 1:
+                if fingerprint:
+                    _add_fingerprint(fingerprint)
+                return {
+                    'candidate_domain': domain,
+                    'matched_seed': seed,
+                    'flag_reason': 'levenshtein',
+                    'score': 0,
+                    'edit_distance': 1,
                     'issuer': cert.get('issuer'),
                     'not_before': cert.get('not_before'),
                     'not_after': cert.get('not_after'),

@@ -34,11 +34,11 @@ def test_homoglyph_hit():
 
 
 def test_keyword_hit():
-    # mbway(25) + login(20) = 45 > 40
-    result = scoring.score_domain('mbway-login.com', _cert('FP-KW-01'))
+    # login(20) + seguro(20) + conta(15) = 55 > 40, no seed brand name in domain
+    result = scoring.score_domain('login-seguro-conta.com', _cert('FP-KW-01'))
     assert result is not None
     assert result['flag_reason'] == 'keyword'
-    assert result['score'] == 45
+    assert result['score'] == 55
 
 
 def test_keyword_below_threshold():
@@ -56,6 +56,50 @@ def test_subdomain_abuse():
 
 def test_unrelated_domain():
     assert scoring.score_domain('google.com', _cert('FP-UNREL-01')) is None
+
+
+def test_brand_contains_novobanco():
+    for domain, fp in [
+        ('loguin-novobanco.com', 'FP-BC-01'),
+        ('novobanco-loguin.com', 'FP-BC-02'),
+        ('app-novobanco.com', 'FP-BC-03'),
+        ('novobanco-app.com', 'FP-BC-04'),
+        ('novobanconet.com', 'FP-BC-05'),
+    ]:
+        result = scoring.score_domain(domain, _cert(fp))
+        assert result is not None, f"missed {domain}"
+        assert result['flag_reason'] == 'brand_contains'
+        assert result['matched_seed'] == 'novobanco.pt'
+
+
+def test_brand_contains_montepio():
+    for domain, fp in [
+        ('montepio-app.com', 'FP-BC-06'),
+        ('montepio-loguin.com', 'FP-BC-07'),
+        ('loguin-montepio.com', 'FP-BC-08'),
+    ]:
+        result = scoring.score_domain(domain, _cert(fp))
+        assert result is not None, f"missed {domain}"
+        assert result['flag_reason'] == 'brand_contains'
+        assert result['matched_seed'] == 'montepio.pt'
+
+
+def test_segment_levenshtein_nbway():
+    # nbway is distance 1 from mbway (n→m)
+    result = scoring.score_domain('nbway-app.com', _cert('FP-SEG-01'))
+    assert result is not None
+    assert result['flag_reason'] == 'levenshtein'
+    assert result['matched_seed'] == 'mbway.pt'
+    assert result['edit_distance'] == 1
+
+
+def test_segment_levenshtein_sanrtander():
+    # sanrtander is distance 1 from santander (extra r)
+    result = scoring.score_domain('sanrtander.com', _cert('FP-SEG-02'))
+    assert result is not None
+    assert result['flag_reason'] == 'levenshtein'
+    assert result['matched_seed'] == 'santander.pt'
+    assert result['edit_distance'] == 1
 
 
 def test_dedup_same_fingerprint():
