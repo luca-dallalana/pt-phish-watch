@@ -1,0 +1,7 @@
+services:
+  consumer:
+    build: ./consumer
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/data
