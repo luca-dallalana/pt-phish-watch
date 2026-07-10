@@ -146,11 +146,16 @@ def _process_log(log_url: str, state: dict, conn) -> None:
     if tree_size is None:
         return
 
-    last = state.get(log_url, tree_size)
+    log_name = log_url.rstrip('/').split('/')[-1]
+
+    if log_url not in state:
+        state[log_url] = max(0, tree_size - 5000)
+
+    last = state[log_url]
     if last >= tree_size:
+        logger.debug('%s: up to date at index %d', log_name, last)
         return
 
-    log_name = log_url.rstrip('/').split('/')[-1]
     logger.info('%s: %d new entries', log_name, tree_size - last)
 
     pos = last
@@ -184,6 +189,7 @@ if __name__ == '__main__':
     logger.info('starting consumer db=%s logs=%d', _DB_PATH, len(CT_LOGS))
 
     while True:
+        logger.debug('poll cycle start')
         for log_url in CT_LOGS:
             _process_log(log_url, state, conn)
         time.sleep(_POLL_INTERVAL)
