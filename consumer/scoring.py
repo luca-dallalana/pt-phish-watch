@@ -87,7 +87,8 @@ def score_domain(domain: str, cert: dict) -> dict | None:
 
     for seed in SEED_REGISTERED:
         dist = Levenshtein.distance(candidate_reg, seed)
-        if 1 <= dist <= 3:
+        max_dist = 1 if len(seed) < 8 else 3
+        if 1 <= dist <= max_dist:
             if fingerprint:
                 _add_fingerprint(fingerprint)
             return {
@@ -128,7 +129,7 @@ def score_domain(domain: str, cert: dict) -> dict | None:
 
     for brand, seed in _SEED_BRAND_MAP.items():
         if (len(brand) >= 4 and brand in candidate_part) or \
-                (len(brand) <= 3 and brand in part_segments):
+                (len(brand) == 3 and brand in part_segments):
             if fingerprint:
                 _add_fingerprint(fingerprint)
             return {
