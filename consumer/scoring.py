@@ -52,6 +52,13 @@ _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
     'santanderconsumer.co',
 ])
 
+# Brands excluded from segment Levenshtein because their 1-edit neighbours are common words
+_SEGMENT_LEV_EXCLUDED_BRANDS: frozenset[str] = frozenset(['eportugal'])
+
+# Brands that require a word-boundary match in brand_contains (position 0 or after '-')
+# Used for brands whose name is a suffix of common legitimate words (e.g. "portugal" ⊂ "eportugal")
+_BOUNDARY_ONLY_BRANDS: frozenset[str] = frozenset(['eportugal'])
+
 # Maps each seed's domain part (no TLD) to its full registered seed, for brand-level checks
 _SEED_BRAND_MAP: dict[str, str] = {
     tldextract.extract(s).domain: _get_registered(s)
@@ -96,7 +103,7 @@ def score_domain(domain: str, cert: dict) -> dict | None:
     cand_domain_part = tldextract.extract(candidate_reg).domain
     for seed in SEED_REGISTERED:
         dist = Levenshtein.distance(candidate_reg, seed)
-        max_dist = 1 if len(seed) < 8 else 3
+        max_dist = 1 if len(seed) < 9 else 3
         if 1 <= dist <= max_dist:
             if cand_domain_part == tldextract.extract(seed).domain:
                 continue
@@ -139,28 +146,37 @@ def score_domain(domain: str, cert: dict) -> dict | None:
     part_segments = set(candidate_part.split('-'))
 
     for brand, seed in _SEED_BRAND_MAP.items():
-        if (len(brand) >= 5 and brand in candidate_part and candidate_part != brand) or \
-                (3 <= len(brand) <= 4 and brand in part_segments):
-            if fingerprint:
-                _add_fingerprint(fingerprint)
-            return {
-                'candidate_domain': domain,
-                'matched_seed': seed,
-                'flag_reason': 'brand_contains',
-                'score': 0,
-                'edit_distance': None,
-                'issuer': cert.get('issuer'),
-                'not_before': cert.get('not_before'),
-                'not_after': cert.get('not_after'),
-                'seen_at': cert.get('seen_at'),
-                'fingerprint': fingerprint,
-            }
+        if len(brand) >= 5:
+            idx = candidate_part.find(brand)
+            if idx == -1 or candidate_part == brand:
+                continue
+            if brand in _BOUNDARY_ONLY_BRANDS and not (idx == 0 or candidate_part[idx - 1] == '-'):
+                continue
+        elif 3 <= len(brand) <= 4:
+            if brand not in part_segments:
+                continue
+        else:
+            continue
+        if fingerprint:
+            _add_fingerprint(fingerprint)
+        return {
+            'candidate_domain': domain,
+            'matched_seed': seed,
+            'flag_reason': 'brand_contains',
+            'score': 0,
+            'edit_distance': None,
+            'issuer': cert.get('issuer'),
+            'not_before': cert.get('not_before'),
+            'not_after': cert.get('not_after'),
+            'seen_at': cert.get('seen_at'),
+            'fingerprint': fingerprint,
+        }
 
     for segment in part_segments | {candidate_part}:
         if len(segment) < 4:
             continue
         for brand, seed in _SEED_BRAND_MAP.items():
-            if len(brand) < 5:
+            if len(brand) < 5 or brand in _SEGMENT_LEV_EXCLUDED_BRANDS:
                 continue
             if Levenshtein.distance(segment, brand) == 1:
                 if fingerprint:
