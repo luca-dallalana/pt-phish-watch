@@ -26,8 +26,6 @@ _BATCH_SIZE = 256
 _HEADERS = {'User-Agent': 'pt-phish-watch/1.0'}
 
 CT_LOGS: list[str] = [
-    'https://oak.ct.letsencrypt.org/2026h2/',
-    'https://oak.ct.letsencrypt.org/2026h1/',
     'https://ct.googleapis.com/logs/us1/argon2026h2/',
     'https://ct.googleapis.com/logs/us1/argon2026h1/',
     'https://ct.cloudflare.com/logs/nimbus2026/',
