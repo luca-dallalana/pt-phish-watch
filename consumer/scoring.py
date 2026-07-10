@@ -160,7 +160,7 @@ def score_domain(domain: str, cert: dict) -> dict | None:
         if len(segment) < 4:
             continue
         for brand, seed in _SEED_BRAND_MAP.items():
-            if len(brand) < 4:
+            if len(brand) < 5:
                 continue
             if Levenshtein.distance(segment, brand) == 1:
                 if fingerprint:
