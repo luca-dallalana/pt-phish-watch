@@ -44,6 +44,14 @@ def _get_registered(domain: str) -> str:
 
 SEED_REGISTERED: frozenset[str] = frozenset(_get_registered(d) for d in SEED_DOMAINS)
 
+# Known legitimate international/compound brand domains — bypass all pipeline steps
+_KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
+    'aegonsantander.pt',
+    'santanderconsumer.no',
+    'santanderconsumer.it',
+    'santanderconsumer.co',
+])
+
 # Maps each seed's domain part (no TLD) to its full registered seed, for brand-level checks
 _SEED_BRAND_MAP: dict[str, str] = {
     tldextract.extract(s).domain: _get_registered(s)
@@ -82,13 +90,16 @@ def score_domain(domain: str, cert: dict) -> dict | None:
 
     domain = domain.lower()
     candidate_reg = _get_registered(domain)
-    if not candidate_reg or candidate_reg in SEED_REGISTERED:
+    if not candidate_reg or candidate_reg in SEED_REGISTERED or candidate_reg in _KNOWN_LEGIT_REGISTERED:
         return None
 
+    cand_domain_part = tldextract.extract(candidate_reg).domain
     for seed in SEED_REGISTERED:
         dist = Levenshtein.distance(candidate_reg, seed)
         max_dist = 1 if len(seed) < 8 else 3
         if 1 <= dist <= max_dist:
+            if cand_domain_part == tldextract.extract(seed).domain:
+                continue
             if fingerprint:
                 _add_fingerprint(fingerprint)
             return {
@@ -128,7 +139,7 @@ def score_domain(domain: str, cert: dict) -> dict | None:
     part_segments = set(candidate_part.split('-'))
 
     for brand, seed in _SEED_BRAND_MAP.items():
-        if (len(brand) >= 4 and brand in candidate_part) or \
+        if (len(brand) >= 4 and brand in candidate_part and candidate_part != brand) or \
                 (len(brand) == 3 and brand in part_segments):
             if fingerprint:
                 _add_fingerprint(fingerprint)
