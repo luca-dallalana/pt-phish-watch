@@ -139,8 +139,8 @@ def score_domain(domain: str, cert: dict) -> dict | None:
     part_segments = set(candidate_part.split('-'))
 
     for brand, seed in _SEED_BRAND_MAP.items():
-        if (len(brand) >= 4 and brand in candidate_part and candidate_part != brand) or \
-                (len(brand) == 3 and brand in part_segments):
+        if (len(brand) >= 5 and brand in candidate_part and candidate_part != brand) or \
+                (len(brand) <= 4 and brand in part_segments):
             if fingerprint:
                 _add_fingerprint(fingerprint)
             return {
