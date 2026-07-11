@@ -83,6 +83,13 @@ _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
     # Legitimate Portuguese entities (1 edit from sef.pt)
     'spf.pt',
     'sec.pt',
+    # Portuguese Ministry of Education (mec.pt is 1 edit from meo.pt)
+    'mec.pt',
+    # Legitimate DevOps/payment platform (mway segment is 1 edit from mbway)
+    'mway.io',
+    # German Vodafone infrastructure (brand_contains on vodafone)
+    'vodafone-ip.de',
+    'vodafone-topangebote.net',
 ])
 
 # Brands excluded from segment Levenshtein because their 1-edit neighbours are common words

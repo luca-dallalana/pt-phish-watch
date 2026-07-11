@@ -116,6 +116,19 @@ def test_known_legit_registered():
         assert scoring.score_domain(domain, _cert(fp)) is None, f"should not flag {domain}"
 
 
+def test_known_legit_registered_new():
+    for domain, fp in [
+        ('dge.mec.pt', 'FP-MEC-01'),           # Portuguese MoE subdomain
+        ('www.mec.pt', 'FP-MEC-02'),
+        ('mway.io', 'FP-MWAY-01'),             # DevOps platform
+        ('dev.k8s.mway.io', 'FP-MWAY-02'),
+        ('vodafone-ip.de', 'FP-VFIP-01'),      # German Vodafone infra
+        ('forecast.vodafone-topangebote.net', 'FP-VFTOP-01'),
+        ('ems.vodafone-topangebote.net', 'FP-VFTOP-02'),
+    ]:
+        assert scoring.score_domain(domain, _cert(fp)) is None, f"should not flag {domain}"
+
+
 def test_meo_dre_segment_excluded():
     assert scoring.score_domain('umami.meo-mai-moi.com', _cert('FP-MEO-01')) is None
     assert scoring.score_domain('account.meo-lab.ch', _cert('FP-MEO-02')) is None
