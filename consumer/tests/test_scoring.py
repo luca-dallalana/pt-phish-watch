@@ -125,6 +125,8 @@ def test_known_legit_registered_new():
         ('vodafone-ip.de', 'FP-VFIP-01'),      # German Vodafone infra
         ('forecast.vodafone-topangebote.net', 'FP-VFTOP-01'),
         ('ems.vodafone-topangebote.net', 'FP-VFTOP-02'),
+        ('vodafone-dsl-flat.de', 'FP-VFDSL-01'),
+        ('vodafoneautonomos.com', 'FP-VFAUT-01'),
     ]:
         assert scoring.score_domain(domain, _cert(fp)) is None, f"should not flag {domain}"
 

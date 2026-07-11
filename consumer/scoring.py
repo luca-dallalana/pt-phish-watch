@@ -90,6 +90,9 @@ _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
     # German Vodafone infrastructure (brand_contains on vodafone)
     'vodafone-ip.de',
     'vodafone-topangebote.net',
+    'vodafone-dsl-flat.de',
+    # Vodafone Spain self-employed product brand
+    'vodafoneautonomos.com',
 ])
 
 # Brands excluded from segment Levenshtein because their 1-edit neighbours are common words
