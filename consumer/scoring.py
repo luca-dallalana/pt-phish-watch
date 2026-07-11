@@ -44,12 +44,45 @@ def _get_registered(domain: str) -> str:
 
 SEED_REGISTERED: frozenset[str] = frozenset(_get_registered(d) for d in SEED_DOMAINS)
 
+# Seeds excluded from registered-domain Levenshtein — structural noise exceeds signal
+# (still active via brand_contains, segment Levenshtein, keyword, and subdomain steps)
+_LEVENSHTEIN_EXCLUDED_SEEDS: frozenset[str] = frozenset([
+    'at.gov.pt',   # 'at' matches any X.gov.Y domain; brand too short for brand_contains
+    'sns.gov.pt',  # 'sns' is a global abbreviation (Japan, Scotland, etc.)
+])
+
 # Known legitimate international/compound brand domains — bypass all pipeline steps
 _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
+    # Santander subsidiaries
     'aegonsantander.pt',
     'santanderconsumer.no',
     'santanderconsumer.it',
     'santanderconsumer.co',
+    'santanderconsumer.cl',
+    'santanderconsumer.ca',
+    'santanderconsumer.es',
+    'santanderconsumer.se',
+    'santanderconsumer.fr',
+    'santanderconsumer.dk',
+    'santanderconsumer.com',
+    'santandersecuritiesservices.com',
+    'santandersecuritiesservices.es',
+    'santanderglobalcards.com',
+    'santanderauto.systems',
+    'santanderassetmanagement.es',
+    'santanderinternationalbankingconference.com',
+    'santanderaccionistaseinversores.com',
+    # Vodafone event/service domains
+    'vodafoneparedesdecoura.pt',
+    'vodafoneparedesdecoura.com',
+    'vodafonexdsl.co.uk',
+    # Novo Banco cultural foundation
+    'novobancocultura.pt',
+    # Polish telecom (nowo brand unrelated to nowo.pt)
+    'stare-na-nowo.pl',
+    # Legitimate Portuguese entities (1 edit from sef.pt)
+    'spf.pt',
+    'sec.pt',
 ])
 
 # Brands excluded from segment Levenshtein because their 1-edit neighbours are common words
@@ -58,6 +91,20 @@ _SEGMENT_LEV_EXCLUDED_BRANDS: frozenset[str] = frozenset(['eportugal'])
 # Brands that require a word-boundary match in brand_contains (position 0 or after '-')
 # Used for brands whose name is a suffix of common legitimate words (e.g. "portugal" ⊂ "eportugal")
 _BOUNDARY_ONLY_BRANDS: frozenset[str] = frozenset(['eportugal'])
+
+# Short brands (3-4 chars) excluded from segment brand_contains — global abbreviations/words
+# that produce too many false positives when matched as exact hyphen-delimited segments.
+# Seeds remain active via Levenshtein, keyword, and subdomain steps.
+_BRAND_SEGMENT_EXCLUDED: frozenset[str] = frozenset([
+    'nos',  # French "our", common non-PT abbreviation
+    'sns',  # global tech/social abbreviation (Japan, Scotland, AWS, etc.)
+    'meo',  # Italian/generic word ("cat"), common syllable globally
+    'dre',  # common abbreviation/name globally (Dr., André, etc.)
+])
+
+# Brands that share their name with a city/region — brand_contains for these requires
+# either a non-ccTLD suffix or a banking keyword, except when suffix == 'pt'.
+_BRAND_CITY_DISAMBIGUATION: frozenset[str] = frozenset(['santander'])
 
 # Maps each seed's domain part (no TLD) to its full registered seed, for brand-level checks
 _SEED_BRAND_MAP: dict[str, str] = {
@@ -102,8 +149,10 @@ def score_domain(domain: str, cert: dict) -> dict | None:
 
     cand_domain_part = tldextract.extract(candidate_reg).domain
     for seed in SEED_REGISTERED:
+        if seed in _LEVENSHTEIN_EXCLUDED_SEEDS:
+            continue
         dist = Levenshtein.distance(candidate_reg, seed)
-        max_dist = 1 if len(seed) < 9 else 3
+        max_dist = 1 if len(seed) < 10 else 3
         if 1 <= dist <= max_dist:
             if cand_domain_part == tldextract.extract(seed).domain:
                 continue
@@ -125,8 +174,11 @@ def score_domain(domain: str, cert: dict) -> dict | None:
     normalized_reg = _normalize(candidate_reg)
     if normalized_reg != candidate_reg:
         for seed in SEED_REGISTERED:
+            if seed in _LEVENSHTEIN_EXCLUDED_SEEDS:
+                continue
             dist = Levenshtein.distance(normalized_reg, seed)
-            if 1 <= dist <= 3:
+            max_dist = 1 if len(seed) < 10 else 3
+            if 1 <= dist <= max_dist:
                 if fingerprint:
                     _add_fingerprint(fingerprint)
                 return {
@@ -153,10 +205,15 @@ def score_domain(domain: str, cert: dict) -> dict | None:
             if brand in _BOUNDARY_ONLY_BRANDS and not (idx == 0 or candidate_part[idx - 1] == '-'):
                 continue
         elif 3 <= len(brand) <= 4:
-            if brand not in part_segments:
+            if brand in _BRAND_SEGMENT_EXCLUDED or brand not in part_segments:
                 continue
         else:
             continue
+        if brand in _BRAND_CITY_DISAMBIGUATION:
+            tld_suffix = tldextract.extract(domain).suffix
+            has_keyword = any(kw in domain for kw in KEYWORD_SCORES)
+            if len(tld_suffix) == 2 and tld_suffix != 'pt' and not has_keyword:
+                continue
         if fingerprint:
             _add_fingerprint(fingerprint)
         return {
