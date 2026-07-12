@@ -93,6 +93,16 @@ _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
     'vodafone-dsl-flat.de',
     # Vodafone Spain self-employed product brand
     'vodafoneautonomos.com',
+    # Portuguese government domains 1 edit from short seeds (dre.pt, meo.pt)
+    'dne.pt',
+    'mei.pt',
+    # German educational org caught by 'sef' segment match
+    'sef-bonn.org',
+    # Peruvian domain caught by dist=3 from montepio.pt
+    'montejo.pe',
+    # Indonesian/Philippine services caught by 'myway' segment Levenshtein
+    'myway.id',
+    'myway.mil.ph',
 ])
 
 # Brands excluded from segment Levenshtein because their 1-edit neighbours are common words

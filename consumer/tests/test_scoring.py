@@ -127,6 +127,13 @@ def test_known_legit_registered_new():
         ('ems.vodafone-topangebote.net', 'FP-VFTOP-02'),
         ('vodafone-dsl-flat.de', 'FP-VFDSL-01'),
         ('vodafoneautonomos.com', 'FP-VFAUT-01'),
+        ('dne.pt', 'FP-DNE-01'),
+        ('mei.pt', 'FP-MEI-01'),
+        ('cpanel.mei.pt', 'FP-MEI-02'),
+        ('sef-bonn.org', 'FP-SEFBONN-01'),
+        ('montejo.pe', 'FP-MONTEJO-01'),
+        ('myway.id', 'FP-MYWAY-01'),
+        ('myway.mil.ph', 'FP-MYWAY-02'),
     ]:
         assert scoring.score_domain(domain, _cert(fp)) is None, f"should not flag {domain}"
 
