@@ -147,6 +147,17 @@ _BRAND_SEGMENT_EXCLUDED: frozenset[str] = frozenset([
 # either a non-ccTLD suffix or a banking keyword, except when suffix == 'pt'.
 _BRAND_CITY_DISAMBIGUATION: frozenset[str] = frozenset(['santander'])
 
+# Extra banking/phishing vocabulary per city-disambiguation brand.
+# Supplements KEYWORD_SCORES for the ccTLD skip check — covers Spanish/PT banking terms
+# that don't appear in the global keyword list.
+_BRAND_CITY_EXTRA_KEYWORDS: dict[str, frozenset[str]] = {
+    'santander': frozenset([
+        'cliente', 'online', 'verificar', 'alerta', 'confirmar',
+        'seguridad', 'netbanco', 'cuenta', 'banca', 'banking',
+        'empresa', 'soporte', 'support', 'app',
+    ]),
+}
+
 # Maps each seed's domain part (no TLD) to its full registered seed, for brand-level checks
 _SEED_BRAND_MAP: dict[str, str] = {
     tldextract.extract(s).domain: _get_registered(s)
@@ -252,8 +263,13 @@ def score_domain(domain: str, cert: dict) -> dict | None:
             continue
         if brand in _BRAND_CITY_DISAMBIGUATION:
             tld_suffix = tldextract.extract(domain).suffix
-            has_keyword = any(kw in domain for kw in KEYWORD_SCORES)
-            if len(tld_suffix) == 2 and tld_suffix != 'pt' and not has_keyword:
+            last_tld = tld_suffix.split('.')[-1]
+            extra_kws = _BRAND_CITY_EXTRA_KEYWORDS.get(brand, frozenset())
+            has_keyword = (
+                any(kw in domain for kw in KEYWORD_SCORES)
+                or any(kw in domain for kw in extra_kws)
+            )
+            if len(last_tld) == 2 and last_tld != 'pt' and not has_keyword:
                 continue
         if fingerprint:
             _add_fingerprint(fingerprint)

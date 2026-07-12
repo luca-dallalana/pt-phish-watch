@@ -166,21 +166,28 @@ def test_spf_sec_not_flagged():
 
 
 def test_santander_city_not_flagged():
-    # City of Santander .es domains with no banking keywords must not be flagged
+    # City/regional Santander domains with no banking keywords must not be flagged
     for domain, fp in [
-        ('santandermunicipio.es', 'FP-CITY-01'),
+        ('santandermunicipio.es', 'FP-CITY-01'),           # .es ccTLD
         ('turismosantander.es', 'FP-CITY-02'),
-        ('santandercantabria.de', 'FP-CITY-03'),
+        ('santandercantabria.de', 'FP-CITY-03'),           # .de ccTLD
+        ('hipotecasantander.com.mx', 'FP-CITY-04'),        # multi-label .com.mx
+        ('myclosetsantander.net.ph', 'FP-CITY-05'),        # multi-label .net.ph
+        ('iedgeneralsantander.edu.co', 'FP-CITY-06'),      # multi-label .edu.co
+        ('lossantos-santander.gov.co', 'FP-CITY-07'),      # multi-label .gov.co
+        ('santandertwist.com.ph', 'FP-CITY-08'),           # multi-label .com.ph
     ]:
         assert scoring.score_domain(domain, _cert(fp)) is None, f"should not flag city domain {domain}"
 
 
 def test_santander_phishing_flagged():
-    # Santander phishing with non-ccTLD or with banking keyword must still be flagged
+    # Santander phishing must still be flagged
     for domain, fp in [
         ('santander-cliente.info', 'FP-SANT-01'),          # non-ccTLD
-        ('verificacion-bancosantander.es', 'FP-SANT-02'),  # ccTLD but has 'banco' keyword
+        ('verificacion-bancosantander.es', 'FP-SANT-02'),  # ccTLD + 'banco' keyword
         ('login-santander.pt', 'FP-SANT-03'),              # .pt always flagged
+        ('netbanco-santander.es', 'FP-SANT-04'),           # ccTLD + extra keyword 'netbanco'
+        ('santander-alerta.com.br', 'FP-SANT-05'),         # multi-label ccTLD + extra keyword 'alerta'
     ]:
         result = scoring.score_domain(domain, _cert(fp))
         assert result is not None, f"should flag phishing domain {domain}"
