@@ -115,6 +115,15 @@ _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
     # Indonesian/Philippine services caught by 'myway' segment Levenshtein
     'myway.id',
     'myway.mil.ph',
+    # Legitimate .pt domain 1 edit from sef.pt
+    'def.pt',
+    # Santander city cycling club (keeps recurring)
+    'caravaningsantander.com',
+    # Chilean payment services caught by eupago segment Levenshtein
+    'upago.cl',
+    'supago.cl',
+    # Legitimate company caught by mcway segment → mbway dist=1
+    'river-atlas-mcway.com',
 ])
 
 # Brands excluded from segment Levenshtein because their 1-edit neighbours are common words

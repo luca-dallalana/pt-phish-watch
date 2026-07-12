@@ -142,6 +142,13 @@ def test_known_legit_registered_new():
         ('montejo.pe', 'FP-MONTEJO-01'),
         ('myway.id', 'FP-MYWAY-01'),
         ('myway.mil.ph', 'FP-MYWAY-02'),
+        ('andrealves.def.pt', 'FP-DEF-01'),
+        ('caravaningsantander.com', 'FP-CARAV-01'),
+        ('www.caravaningsantander.com', 'FP-CARAV-02'),
+        ('upago.cl', 'FP-UPAGO-01'),
+        ('img.emails.upago.cl', 'FP-UPAGO-02'),
+        ('supago.cl', 'FP-SUPAGO-01'),
+        ('river-atlas-mcway.com', 'FP-MCWAY-01'),
     ]:
         assert scoring.score_domain(domain, _cert(fp)) is None, f"should not flag {domain}"
 
