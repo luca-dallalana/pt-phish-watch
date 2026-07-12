@@ -112,6 +112,14 @@ def test_known_legit_registered():
         ('novobancocultura.pt', 'FP-KL-05'),
         ('vodafoneparedesdecoura.pt', 'FP-KL-06'),
         ('stare-na-nowo.pl', 'FP-KL-07'),
+        ('bancosantander.es', 'FP-KL-08'),
+        ('gruposantander.com', 'FP-KL-09'),
+        ('santandercib.com', 'FP-KL-10'),
+        ('santanderconsumer.pt', 'FP-KL-11'),
+        ('santanderconsumerfinance.com', 'FP-KL-12'),
+        ('santanderconfirming.co.uk', 'FP-KL-13'),
+        ('santanderglobalconfirming.com', 'FP-KL-14'),
+        ('fundacionbancosantander.com', 'FP-KL-15'),
     ]:
         assert scoring.score_domain(domain, _cert(fp)) is None, f"should not flag {domain}"
 

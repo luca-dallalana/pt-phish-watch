@@ -53,7 +53,19 @@ _LEVENSHTEIN_EXCLUDED_SEEDS: frozenset[str] = frozenset([
 
 # Known legitimate international/compound brand domains — bypass all pipeline steps
 _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
-    # Santander subsidiaries
+    # Santander subsidiaries and official brand domains
+    'bancosantander.es',
+    'gruposantander.com',
+    'santandercib.com',
+    'santanderalternatives.com',
+    'santanderconsumer.pt',
+    'santanderconsumerfinance.com',
+    'santanderconsumerefc.com',
+    'santanderconfirming.co.uk',
+    'santandersupplychainfinance.co.uk',
+    'santanderglobalconfirming.com',
+    'santanderuniversidades.com.mx',
+    'fundacionbancosantander.com',
     'aegonsantander.pt',
     'santanderconsumer.no',
     'santanderconsumer.it',
