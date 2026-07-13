@@ -142,6 +142,23 @@ _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
     # ifthenpay Levenshtein false positives
     'fhenway.com',
     'thenpa.com',
+    'getzenpay.com',
+    # SEF false positives — short brand matches global abbreviations/non-PT orgs
+    'sef-academy.fr',  # French educational org
+    'sef.ca',          # Canadian domain
+    'sefo.pt',         # Portuguese fleet management (1 edit from sef.pt)
+    # Legitimate .pt institutions caught by Levenshtein from dre.pt
+    'drem.pt',         # DREM — Regional Statistics Directorate of Madeira
+    'd2e.pt',          # Legitimate Portuguese domain (1 edit from dre.pt)
+    # Vodafone international domains
+    'vodfone.it',      # Vodafone Italy MDM infra (segment Lev=1 from vodafone)
+    'vodafonesim.com', # Vodafone SIM portal
+    'nadacevodafone.cz', # Vodafone CZ foundation
+    'fuckvodafone.com', # Complaint site
+    # Santander city businesses (Spain/Colombia) — .com gTLD, no banking keywords
+    'macamsantander.com',
+    'elmercaosantander.com',
+    'serviciosdesaludsantandervida.com',
 ])
 
 # Brands excluded from segment Levenshtein because their 1-edit neighbours are common words
