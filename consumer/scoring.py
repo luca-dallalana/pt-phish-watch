@@ -124,6 +124,24 @@ _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
     'supago.cl',
     # Legitimate company caught by mcway segment → mbway dist=1
     'river-atlas-mcway.com',
+    # Portuguese ISP (inos.pt is 1 edit from nos.pt)
+    'inos.pt',
+    # Portuguese preproduction env (mc.pt is 1 edit from mj.pt)
+    'mc.pt',
+    # Santander city — art school (.com city domain, recurring)
+    'academiamixsantander.com',
+    # myway services unrelated to MBWay (Italian, Japanese, English)
+    'myway.it',
+    'myway-kobetsu.com',
+    'retire-myway.com',
+    # Vodafone Italy/Spain legitimate domains
+    'vodafoneagenzia.it',
+    'wwwmivodafone.es',
+    # German Vodafone topangebote (.com variant — CT probe domains)
+    'vodafone-topangebote.com',
+    # ifthenpay Levenshtein false positives
+    'fhenway.com',
+    'thenpa.com',
 ])
 
 # Brands excluded from segment Levenshtein because their 1-edit neighbours are common words
