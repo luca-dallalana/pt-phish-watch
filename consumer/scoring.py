@@ -159,6 +159,21 @@ _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
     'macamsantander.com',
     'elmercaosantander.com',
     'serviciosdesaludsantandervida.com',
+    'hielosantander.com',
+    'alvarsantander.net',
+    # Legitimate .pt domains caught by Levenshtein from dre.pt
+    'drg.pt',  # recurring Portuguese domain
+    'dce.pt',  # Portuguese domain (generali.dce.pt, plengenharia.pt.dce.pt)
+    # Legitimate .pt domain caught by Levenshtein from sef.pt
+    'saf.pt',
+    # Indian NOWO domain unrelated to NOWO Portugal
+    'nowo.in',
+    # Vodafone Spain internal (segment Lev=1 from vodafone)
+    'vodafon.es',
+    # Vodafone Germany partner shop
+    'vodafone-partner-radolfzell.de',
+    # French SEF training/reviews org
+    'sef-formation-avis.fr',
 ])
 
 # Brands excluded from segment Levenshtein because their 1-edit neighbours are common words
