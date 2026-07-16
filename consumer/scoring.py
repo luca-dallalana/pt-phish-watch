@@ -174,6 +174,33 @@ _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
     'vodafone-partner-radolfzell.de',
     # French SEF training/reviews org
     'sef-formation-avis.fr',
+    # Italian SEF safety & training org
+    'sef-sicurezzaeformazione.it',
+    # Vodafone Spain documentation portal
+    'documentacionvodafone.com',
+    # Vodafone Germany DSL flat-rate (.de variant of vodafone-dsl-flat.de)
+    'vodafone-dsl-flatrate.de',
+    # Vodafone cap/limit info site
+    'capvodafone.net',
+    # Japanese myway brand (Beppu city — caught by segment Lev myway→mbway)
+    'beppu-myway.jp',
+    # Danone Portugal (legitimate dairy company — Lev hit from vodafone.pt)
+    'danone.pt',
+    # Brazilian State of Santa Catarina tax authority (SEF.SC.GOV.BR)
+    'sef.sc.gov.br',
+    # Colombian restaurant — zmail.rinconsantandereano.com subdomains are spam infra
+    'rinconsantandereano.com',
+    # Angolan bank Banco BAI (testing.bancobai.ao recurring)
+    'bancobai.ao',
+    # Australian payment company (Lev hit from ifthenpay.com)
+    'afterpay.com',
+    # ifthenpay Levenshtein false positives
+    'altheapay.com',
+    'indhanpay.com',
+    'ithelpau.com',
+    # German and Romanian SEF false positives
+    'jo-sef.de',
+    'contabil-sef.ro',
 ])
 
 # Brands excluded from segment Levenshtein because their 1-edit neighbours are common words
