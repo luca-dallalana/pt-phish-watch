@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 1200px;
+      height: 1200px;
+      overflow: hidden;
+      background: #0d1117;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .canvas {
+      width: 1200px;
+      height: 1200px;
+      background: #0d1117;
+      display: flex;
+      flex-direction: column;
+      padding: 64px 80px 56px;
+      position: relative;
+    }
+    .canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(88, 166, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(88, 166, 255, 0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .eyebrow {
+      font-size: 13px;
+      color: #388bfd;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      font-weight: 500;
+      position: relative;
+    }
+    .title {
+      font-size: 36px;
+      color: #e6edf3;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 6px;
+      position: relative;
+    }
+    .subtitle {
+      font-size: 19px;
+      color: #484f58;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .subtitle em { font-style: normal; color: #f85149; }
+
+    .editor {
+      position: relative;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      overflow: hidden;
+      flex: 1;
+    }
+    .editor-header {
+      background: #1c2128;
+      border-bottom: 1px solid #30363d;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .dots {
+      display: flex;
+      gap: 7px;
+    }
+    .dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+    .dot.red    { background: #ff5f57; }
+    .dot.yellow { background: #febc2e; }
+    .dot.green  { background: #28c840; }
+    .filename {
+      font-size: 12px;
+      color: #484f58;
+      letter-spacing: 1px;
+    }
+    .source-label {
+      margin-left: auto;
+      font-size: 11px;
+      color: #21262d;
+      letter-spacing: 1px;
+    }
+
+    .code-body {
+      padding: 28px 0;
+      position: relative;
+    }
+    .code-line {
+      display: flex;
+      align-items: flex-start;
+      padding: 3px 0;
+      position: relative;
+    }
+    .code-line.highlight {
+      background: rgba(248, 81, 73, 0.06);
+    }
+    .code-line.highlight-blue {
+      background: rgba(88, 166, 255, 0.06);
+    }
+    .line-num {
+      width: 48px;
+      text-align: right;
+      padding-right: 20px;
+      font-size: 13px;
+      color: #30363d;
+      flex-shrink: 0;
+      line-height: 1.7;
+    }
+    .code-text {
+      font-size: 13.5px;
+      line-height: 1.7;
+      white-space: pre;
+      flex: 1;
+      padding-right: 20px;
+    }
+
+    .kw  { color: #ff7b72; }
+    .str { color: #a5d6ff; }
+    .fn  { color: #d2a8ff; }
+    .cm  { color: #8b949e; }
+    .var { color: #ffa657; }
+    .op  { color: #e6edf3; }
+    .dim { color: #6e7681; }
+
+    .annotation {
+      position: absolute;
+      right: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .annotation-line {
+      width: 40px;
+      height: 1px;
+      background: #30363d;
+    }
+    .annotation-text {
+      font-size: 11px;
+      color: #8b949e;
+      background: #1c2128;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 4px 10px;
+      white-space: nowrap;
+      letter-spacing: 0.5px;
+    }
+    .annotation-text.red { color: #f85149; border-color: #5a1a1a; background: #1f0d0c; }
+    .annotation-text.blue { color: #58a6ff; border-color: #1f3f6e; background: #0d1f3c; }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .caption {
+      font-size: 14px;
+      color: #484f58;
+      line-height: 1.6;
+    }
+    .caption strong { color: #8b949e; }
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .slide-counter { font-size: 12px; color: #21262d; letter-spacing: 2px; }
+    .footer-brand { font-size: 12px; color: #21262d; letter-spacing: 2px; text-transform: uppercase; }
+    .footer-brand span { color: #388bfd; }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="eyebrow">PT Phish Watch &nbsp;·&nbsp; CGD Layer 1 — Source Captured</div>
+    <h1 class="title">Não é um site copy and paste.</h1>
+    <p class="subtitle">É um <em>sistema de rastreio de vítimas.</em></p>
+
+    <div class="editor">
+      <div class="editor-header">
+        <div class="dots">
+          <div class="dot red"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
+        </div>
+        <span class="filename">apagar-cgd.com &nbsp;·&nbsp; index.html &nbsp;·&nbsp; Layer 1</span>
+        <span class="source-label">source captured live</span>
+      </div>
+
+      <div class="code-body">
+
+        <div class="code-line">
+          <span class="line-num">1</span>
+          <span class="code-text"><span class="dim">&lt;script src="/js/fingerprint/iife.min.js"&gt;&lt;/script&gt;</span></span>
+        </div>
+
+        <div class="code-line highlight-blue" style="position:relative;">
+          <span class="line-num">2</span>
+          <span class="code-text"><span class="kw">var</span> <span class="var">redirect_link</span> <span class="op">=</span> <span class="str">'http://apagar-cgd.com/?tr_uuid=<span style="color:#f85149;font-weight:700;">20260719-0150</span>-51c7-8c95-8a620&amp;'</span>;</span>
+          <div class="annotation" style="top: 4px;">
+            <div class="annotation-line"></div>
+            <span class="annotation-text red">timestamp embedded in UUID — new per session</span>
+          </div>
+        </div>
+
+        <div class="code-line">
+          <span class="line-num">3</span>
+          <span class="code-text"><span class="kw">let</span> <span class="var">redirected</span> <span class="op">=</span> <span class="kw">false</span>;</span>
+        </div>
+
+        <div class="code-line">
+          <span class="line-num">4</span>
+          <span class="code-text"><span class="kw">function</span> <span class="fn">redirect</span>(suffix) {</span>
+        </div>
+
+        <div class="code-line">
+          <span class="line-num">5</span>
+          <span class="code-text">  <span class="kw">if</span> (redirected) <span class="kw">return</span>;</span>
+        </div>
+
+        <div class="code-line">
+          <span class="line-num">6</span>
+          <span class="code-text">  redirected <span class="op">=</span> <span class="kw">true</span>;</span>
+        </div>
+
+        <div class="code-line">
+          <span class="line-num">7</span>
+          <span class="code-text">  window.location.<span class="fn">replace</span>(redirect_link <span class="op">+</span> suffix);</span>
+        </div>
+
+        <div class="code-line">
+          <span class="line-num">8</span>
+          <span class="code-text">}</span>
+        </div>
+
+        <div class="code-line">
+          <span class="line-num">9</span>
+          <span class="code-text"><span class="kw">const</span> <span class="var">rdrTimeout</span> <span class="op">=</span> <span class="fn">setTimeout</span>(() <span class="op">=&gt;</span> <span class="fn">redirect</span>(<span class="str">'fp=-7'</span>), <span class="str">300</span>);</span>
+        </div>
+
+        <div class="code-line highlight" style="position:relative;">
+          <span class="line-num">10</span>
+          <span class="code-text"><span class="fn">FingerprintJS</span>.<span class="fn">load</span>({monitoring: <span class="kw">false</span>})</span>
+          <div class="annotation" style="top: 4px;">
+            <div class="annotation-line"></div>
+            <span class="annotation-text blue">browser fingerprinting before any form is shown</span>
+          </div>
+        </div>
+
+        <div class="code-line">
+          <span class="line-num">11</span>
+          <span class="code-text">  .<span class="fn">then</span>(fp <span class="op">=&gt;</span> fp.<span class="fn">get</span>())</span>
+        </div>
+
+        <div class="code-line highlight" style="position:relative;">
+          <span class="line-num">12</span>
+          <span class="code-text">  .<span class="fn">then</span>(result <span class="op">=&gt;</span> <span class="fn">redirect</span>(<span class="str">'fp='</span> <span class="op">+</span> result.<span class="var">visitorId</span>));</span>
+          <div class="annotation" style="top: 4px;">
+            <div class="annotation-line"></div>
+            <span class="annotation-text red">unique visitor ID appended to redirect URL</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer-row">
+      <p class="caption">
+        A página aparece <strong>em branco</strong>. Nos bastidores, identifica o visitante<br>
+        e redireciona para a página de credenciais com o ID embutido no URL.
+      </p>
+      <div class="footer-right">
+        <span class="slide-counter">5 / 6</span>
+        <span class="footer-brand"><span>pt-phish-watch</span></span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

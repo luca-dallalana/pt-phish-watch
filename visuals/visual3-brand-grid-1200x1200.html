@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 1200px;
+      height: 1200px;
+      overflow: hidden;
+      background: #0d1117;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .canvas {
+      width: 1200px;
+      height: 1200px;
+      background: #0d1117;
+      display: flex;
+      flex-direction: column;
+      padding: 56px 64px 48px;
+      position: relative;
+    }
+    .canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(88, 166, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(88, 166, 255, 0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .eyebrow {
+      font-size: 13px;
+      color: #388bfd;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-weight: 500;
+      position: relative;
+    }
+    .title {
+      font-size: 28px;
+      color: #e6edf3;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .title em { font-style: normal; color: #f85149; }
+
+    .grid-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .grid-top {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      height: 380px;
+    }
+    .grid-bottom {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      height: 280px;
+    }
+    .cell {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .cell::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .cell.cgd::before       { background: linear-gradient(90deg, #e5322d, transparent); }
+    .cell.santander::before { background: linear-gradient(90deg, #ec0000, transparent); }
+    .cell.novobanco::before { background: linear-gradient(90deg, #00a0df, transparent); }
+    .cell.bpi::before       { background: linear-gradient(90deg, #004a97, transparent); }
+    .cell.montepio::before  { background: linear-gradient(90deg, #007b5e, transparent); }
+    .cell.vodafone::before  { background: linear-gradient(90deg, #e60000, transparent); }
+    .cell.financas::before  { background: linear-gradient(90deg, #1a6faf, transparent); }
+
+    .brand-name {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .cell.cgd       .brand-name { color: #e5322d; }
+    .cell.santander .brand-name { color: #f85149; }
+    .cell.novobanco .brand-name { color: #58a6ff; }
+    .cell.bpi       .brand-name { color: #79c0ff; }
+    .cell.montepio  .brand-name { color: #56d364; }
+    .cell.vodafone  .brand-name { color: #ff6b6b; }
+    .cell.financas  .brand-name { color: #79c0ff; }
+
+    .badge {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      width: 100%;
+    }
+    .badge.live    { color: #3fb950; background: #0d2318; border: 1px solid #1a4a2e; }
+    .badge.infra   { color: #d29922; background: #1f1b0e; border: 1px solid #4a3805; }
+    .badge.flagged { color: #f85149; background: #1f0d0c; border: 1px solid #5a1a1a; }
+
+    .domain-list { display: flex; flex-direction: column; gap: 7px; }
+    .phish-domain {
+      font-size: 10.5px;
+      color: #6e7681;
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 4px;
+      padding: 5px 9px;
+      word-break: break-all;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+    .stat { font-size: 12px; color: #484f58; letter-spacing: 1px; }
+    .stat strong { color: #8b949e; }
+    .slide-num { font-size: 12px; color: #21262d; letter-spacing: 2px; }
+    .footer-brand { font-size: 12px; color: #21262d; letter-spacing: 2px; text-transform: uppercase; }
+    .footer-brand span { color: #388bfd; }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="eyebrow">PT Phish Watch &nbsp;·&nbsp; Brand Targeting Analysis</div>
+    <h1 class="title">1 semana. 5 bancos, 1 operadora, 1 portal do governo.<br><em>Todos em simultâneo.</em></h1>
+
+    <div class="grid-wrapper">
+      <div class="grid-top">
+        <div class="cell cgd">
+          <div class="brand-name">CGD</div>
+          <span class="badge infra">Infrastructure</span>
+          <div class="domain-list">
+            <div class="phish-domain">cgd-removermovel.com</div>
+            <div class="phish-domain">apagar-cgd.com</div>
+            <div class="phish-domain">cgd-seguropt.com</div>
+          </div>
+        </div>
+        <div class="cell santander">
+          <div class="brand-name">Santander</div>
+          <span class="badge flagged">CT Flagged</span>
+          <div class="domain-list">
+            <div class="phish-domain">santander-conta.com</div>
+            <div class="phish-domain">resgateonlinesantander.com</div>
+          </div>
+        </div>
+        <div class="cell novobanco">
+          <div class="brand-name">NovoBanco</div>
+          <span class="badge infra">Kit Cluster</span>
+          <div class="domain-list">
+            <div class="phish-domain">conta-novobanco.online</div>
+            <div class="phish-domain">alertnovobanco.com</div>
+          </div>
+        </div>
+        <div class="cell bpi">
+          <div class="brand-name">BPI</div>
+          <span class="badge infra">Kit Cluster</span>
+          <div class="domain-list">
+            <div class="phish-domain">pt-bancobpi.com</div>
+            <div class="phish-domain">empresas-bancobpi.cc</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-bottom">
+        <div class="cell montepio">
+          <div class="brand-name">Montepio</div>
+          <span class="badge live">Live Clone</span>
+          <div class="domain-list">
+            <div class="phish-domain">montepiobanc.com</div>
+            <div class="phish-domain">montepioempresas.net</div>
+          </div>
+        </div>
+        <div class="cell vodafone">
+          <div class="brand-name">Vodafone PT</div>
+          <span class="badge live">Live Clone</span>
+          <div class="domain-list">
+            <div class="phish-domain">myvodafoneportugal.site</div>
+          </div>
+        </div>
+        <div class="cell financas">
+          <div class="brand-name">Portal das Finanças</div>
+          <span class="badge live">Live Clone</span>
+          <div class="domain-list">
+            <div class="phish-domain">email-portaldasfinancas.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-row">
+      <div class="stat"><strong>2,029</strong> certs flagged &nbsp;·&nbsp; <strong>7</strong> dias &nbsp;·&nbsp; <strong>7</strong> marcas</div>
+      <div class="slide-num">4 / 6</div>
+      <div class="footer-brand"><span>pt-phish-watch</span></div>
+    </div>
+  </div>
+</body>
+</html>
