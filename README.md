@@ -12,7 +12,8 @@ This repository contains the monitor code and the findings from a 7-day observat
 
 | | |
 |---|---|
-| ![Hook](visuals/visual0-hook-1200x1200.png) | ![Brand grid](visuals/visual3-brand-grid-1200x1200.png) |
+| ![Hook](visuals/visual0-hook-1200x1200.png) | ![The build](visuals/visual1-the-build-1200x1200.png) |
+| ![IP map](visuals/visual2-ip-map-1200x1200.png) | ![Brand grid](visuals/visual3-brand-grid-1200x1200.png) |
 | ![Source code](visuals/visual4-source-code-1200x1200.png) | ![CTA](visuals/visual5-cta-1200x1200.png) |
 
 ---
