@@ -255,6 +255,18 @@ _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
     'sef.org.pk',
     # ww38 parking infrastructure — santahnder.de is a parked redirect, not a live phish
     'santahnder.de',
+    # Haven Nature Hotel (monterina.pt redirects here — legitimate PT hotel)
+    'monterina.pt',
+    # DGD.pt — Direção-Geral do Desporto, real Portuguese government entity
+    'dgd.pt',
+    # Santander city innovation hub (coworking, not the bank)
+    'santander-nest.com',
+    # Latin American pawn shop ("montepio empenos" = pawn in Spanish, unrelated to Banco Montepio)
+    'montepioempenos.com',
+    # Zurich-Santander insurance JV API infrastructure (confirmed legitimate)
+    'zurichsantanderseguros.cl',
+    # Legitimate personal WordPress blog (data/tech/community)
+    'ifthenels.com',
 ])
 
 # Brands excluded from segment Levenshtein because their 1-edit neighbours are common words
