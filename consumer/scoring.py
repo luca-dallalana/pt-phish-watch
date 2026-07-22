@@ -201,6 +201,60 @@ _KNOWN_LEGIT_REGISTERED: frozenset[str] = frozenset([
     # German and Romanian SEF false positives
     'jo-sef.de',
     'contabil-sef.ro',
+    # NOWO UK (Vodafone subsidiary, unrelated to nowo.pt)
+    'nowo.co.uk',
+    # Santander city biopark (Spain)
+    'bioparksantander.com',
+    # Santander Asset Management PT (legitimate subsidiary — .es variant already present)
+    'santanderassetmanagement.pt',
+    # Santander private banking portal
+    'santanderprivatebanking.com',
+    # Vodafone IoT platform
+    'vodafoneinnovus.com',
+    # Vodafone Germany advisor site
+    'vodafone-berater.com',
+    # eupago Levenshtein — Chinese domain registry, unrelated
+    'kupago.wang',
+    # myway gaming brand, unrelated to MBWay
+    'myway-games.com',
+    # Vodafone AWS infrastructure domain
+    'vodafoneaws.co.uk',
+    # NOWO internal infrastructure
+    'nowo.tech',
+    # Santander city document management company (recurring)
+    'imctsantanderdocumental.com',
+    # Legitimate Portuguese .pt domain (santicapi.veo.pt)
+    'veo.pt',
+    # Vodafone Philippines legal entity name
+    'vodafone-international-financing-designated-activity.net.ph',
+    # Legitimate Novo Banco .pt domain (www.in.novo.banco.pt)
+    'banco.pt',
+    # Santander Open Academy — real Santander education platform
+    'santanderopenacademy.com',
+    # Santander city (Spain) — casino, coal company, dentist, festival, gaming
+    'grancasinosantander.com',
+    'carbonesdesantander.com',
+    'santanderdentista.com',
+    'santanderfestivaldelmar.com',
+    'gamingsantander.com',
+    # Colombian Norte de Santander history academy
+    'academiadehistoriadenortedesantander.com',
+    # Santander city queue/service business
+    'lacoladasantander.com',
+    # CIE Santander (Santander city)
+    'ciesantander.com',
+    # Vodafone India real domain (vodfone.in — Vodafone India MDM/service)
+    'vodfone.in',
+    # Vodafone Greece customer unit
+    'vodafonecu.gr',
+    # Vodafone speed test tool
+    'vodafonespeedtest.net',
+    # Legitimate Portuguese .pt domains
+    'dhe.pt',
+    # Pakistani SEF organization — unrelated to sef.pt
+    'sef.org.pk',
+    # ww38 parking infrastructure — santahnder.de is a parked redirect, not a live phish
+    'santahnder.de',
 ])
 
 # Brands excluded from segment Levenshtein because their 1-edit neighbours are common words
